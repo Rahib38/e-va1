@@ -14,6 +14,8 @@ model User {
   orders    Order[]   @relation("UserOrders")
   payments  Payment[] @relation("UserPayments")
   createdAt DateTime  @default(now())
+
+  @@map("users")
 }
 
 model Product {
@@ -21,14 +23,16 @@ model Product {
   name      String
   price     Int // Price in cents
   createdBy String
-  orderId   String
+  orderId   String @db.ObjectId
   order     Order    @relation(fields: [orderId], references: [id])
   createdAt DateTime @default(now())
+
+  @@map("products")
 }
 
 model Order {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String
+  userId    String @db.ObjectId
   products  Product[]
   total     Int
   status    String    @default("pending")
@@ -36,12 +40,14 @@ model Order {
 
   user     User      @relation("UserOrders", fields: [userId], references: [id])
   payments Payment[] @relation("OrderPayments")
+
+  @@map("oders")
 }
 
 model Payment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String
-  orderId   String
+  userId    String @db.ObjectId
+  orderId   String @db.ObjectId
   amount    Int
   status    String
   stripeId  String
@@ -49,4 +55,6 @@ model Payment {
 
   user  User  @relation("UserPayments", fields: [userId], references: [id])
   order Order @relation("OrderPayments", fields: [orderId], references: [id])
+
+  @@map("payments")
 }
