@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  email     String    @unique
+  name      String
+  orders    Order[]   @relation("UserOrders")
+  payments  Payment[] @relation("UserPayments")
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  price     Int // Price in cents
+  createdBy String
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  products  Product[]
+  total     Int
+  status    String    @default("pending")
+  createdAt DateTime  @default(now())
+
+  user     User      @relation("UserOrders", fields: [userId], references: [id])
+  payments Payment[] @relation("OrderPayments")
+}
+
+model Payment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  orderId   String
+  amount    Int
+  status    String
+  stripeId  String
+  createdAt DateTime @default(now())
+
+  user  User  @relation("UserPayments", fields: [userId], references: [id])
+  order Order @relation("OrderPayments", fields: [orderId], references: [id])
+}
