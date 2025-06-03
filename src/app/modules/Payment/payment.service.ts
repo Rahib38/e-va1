@@ -30,6 +30,7 @@ const createPayment = async (userId: string, payload: IPayment) => {
   }
 
   const session = await stripe.checkout.sessions.create({
+    
     payment_method_types: ["card"],
     mode: "payment",
     // customer_name:order.user.name,
@@ -37,12 +38,12 @@ const createPayment = async (userId: string, payload: IPayment) => {
     line_items: order.products.map((p) => ({
       price_data: {
         currency: "bdt",
-        unit_amount: p.price *100,
+        unit_amount: p.price * 100,
         product_data: { name: p.name },
       },
       quantity: 1,
     })),
-    success_url: `http://localhost:5000/success`,
+    success_url: `http://localhost:5000/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `http://localhost:5000/cancel`,
   });
   return session.url;

@@ -19,16 +19,6 @@ const createOrder = async (
     throw new ApiError(httpStatus.NOT_FOUND, "this user not found");
   }
 
-//   const productExists = await prisma.product.findUnique({
-//     where: {
-//       id: productId,
-//     },
-//   });
-
-//   if (!productExists) {
-//     throw new ApiError(httpStatus.NOT_FOUND, "this product not found");
-//   }
-
   const products = await prisma.product.findMany({
     where: {
       id: {
