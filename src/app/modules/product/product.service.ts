@@ -33,6 +33,12 @@ const createProduct = async(userId:string,payload:IProduct)=>{
     return result
 }
 
+
+const getAllProduct=async()=>{
+    const result = await prisma.product.findMany()
+    return result
+}
+
 export const ProductService={
-    createProduct
+    createProduct,getAllProduct
 } 

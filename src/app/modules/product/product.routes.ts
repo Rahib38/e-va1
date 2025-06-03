@@ -7,4 +7,6 @@ const router = Router();
 
 router.post("/create",auth(UserRole.ADMIN),productController.createProduct)
 
+router.get("/",productController.getAllProduct)
+
 export const ProductRoutes = router;
